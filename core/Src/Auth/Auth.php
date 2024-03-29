@@ -23,6 +23,7 @@ class Auth
    {
        self::$user = $user;
        Session::set('id', self::$user->getId());
+       Session::set('role', self::$user->role);
    }
 
    //Аутентификация пользователя и вход по учетным данным
@@ -51,6 +52,14 @@ class Auth
        return false;
    }
 
+   public static function checkRole(): bool
+   {
+        $role = Session::get('role') ?? 0;
+        if($role === 'admin' || $role === 'decant'){
+            return true;
+        }
+        return false;
+   }
    //Выход текущего пользователя
    public static function logout(): bool
    {
