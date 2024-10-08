@@ -23,6 +23,7 @@
             <p>дата рождение <?= $student->birth_date ?></p>
             <p>адрес <?= $student->address ?></p>
             <p>группа <?= $student->group_id ?></p>
+            <p>специальность <?= $student->group->speciality?> </p>
             <?php if (!is_null($student->performance)): ?>
                 <?php foreach ($student->performance as $performance): ?>
                     <p>дисциплина <?= $performance->discipline_id ?></p>

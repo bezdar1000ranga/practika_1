@@ -16,6 +16,7 @@
         <p>дата рождение <?= $student->birth_date ?></p>
         <p>адрес <?= $student->address ?></p>
         <p>группа <?= $student->group_id ?></p>
+        <p>специальность <?= $student->group->speciality ?> </p>
     </div>
     <?php endforeach; ?>    
 </div>

@@ -67,9 +67,10 @@ class Site
     {
         if($request->method === 'POST'){
             $validator = new Validator($request->all(), [
-                'discipline_name' => ['required'],
+                'discipline_name' => ['required', 'unique:disciplines,discipline_name'],
             ], [
                 'required' => 'Поле :field пусто',
+                'unique' => 'Поле :field должно быть уникально'
             ]);
 
             if($validator->fails()){
@@ -131,12 +132,13 @@ class Site
         if($request->method === 'POST'){
             $validator = new Validator($request->all(), [
                 'discipline_id' => ['required'],
-                'group_number' => ['required'],
+                'group_number' => ['required', 'unique:groups,group_number'],
                 'speciality' => ['required'],
                 'course' => ['required'],
                 'semester' => ['required'],
             ], [
                 'required' => 'Поле :field пусто',
+                'unique' => 'Поле :field уже есть в базе данных'
             ]);
 
             if($validator->fails()){
@@ -215,6 +217,8 @@ class Site
 
         foreach($students as $student){
             $studentPerformance = Performance::where('student_id', $student->student_id)->get();
+            $student->group = Group::where('group_id', $student->group_id)->first();
+
             foreach($studentPerformance as $stpf){
                 $disciplineName = Discipline::where('discipline_id', $stpf->discipline_id)->get();
                 $stpf->discipline_id = $disciplineName[0]->discipline_name;
@@ -324,6 +328,10 @@ class Site
                     $student->performance = $studentPerformance;
                 }
             }
+        }
+
+        foreach($students as $student){
+            $student->group = Group::where('group_id', $student->group_id)->first();
         }
         return new View('site.student-group', ['disciplines' => $disciplines, 'groups' => $groups , 'students' => $students]);
     }
@@ -445,6 +453,10 @@ class Site
             $studentName = $request->all()['student_name'];
             $students = Student::where('first_name', 'LIKE', "%$studentName%")->get();
         }
+
+        foreach($students as $student){
+            $student->group = Group::where('group_id', $student->group_id)->first();
+        };
 
         return new View('site.poisk', ['students' => $students]);
     }
